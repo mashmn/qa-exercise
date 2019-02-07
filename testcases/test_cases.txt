@@ -2,10 +2,9 @@
 
 Test Cases:
 
-Initial test
-1. Check Header
+1. Simple test to get the header
 
-2. Create a todo
+2. Create a todo [no tags wrapped around tasks added]
 2.a. Create a todo (assign no cat, no due date)
 2.b. Create a todo (assign cat, no due date) - check color
 2.c. Create a todo (assign cat, due date)- check color

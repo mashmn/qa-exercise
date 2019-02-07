@@ -15,7 +15,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 /*****************************************************************************
  * Author:      Mahesh Nair
  * Description: This is the first Selenium TestNG test.
- *              It opens swtestacademy homepage and prints and checks its title.
+ *              
 *******************************************************************************/
 
 public class AppTest {
@@ -44,7 +44,7 @@ public class AppTest {
     }
 
     //-----------------------------------Tests-----------------------------------
-    @Test
+    @Test(description = "1. Simple test to get the header")
     public void firstTest () {
         //Get page title
         // String title = driver.findElement(By.xpath("//*[@id=\"label-first\"]/b")).getText();
@@ -60,12 +60,35 @@ public class AppTest {
     
 	
 	
-	@Test(description = "Create a Todo task - no category and no due date")
-	public void createTodo() {
-		webObjects.setTodoData(driver).sendKeys("Homework");
+	@Test(description = "2.a. Create a Todo task - no category and no due date")
+	public void setTodoDataNoCatNoDue() {
+		String task = "Heyo";
+		
+		webObjects.setTodoData(driver).sendKeys(task);
 		webObjects.todoSubmit(driver).click();
-		String formFetch = webObjects.formFetch(driver).getText();
-		Assert.assertEquals(formFetch, "Homework (None)", "Title assertion is failed!");
+		
+		// TODO - reuse this block to check if todo tasks are already existing
+		if (webObjects.todoAlreadyExists(driver)) {
+			// Click Back
+			webObjects.todoAlreadyExistsGoBack(driver);
+			System.out.println("The TODO item exists already.");
+		}
+		
+		// Text is no wrapped in a span or such tags?
+		String formFetch = webObjects.formFetch(driver,task).getText();
+		Assert.assertEquals(formFetch, task+" (None)", "Title assertion is failed!");
+	}
+	
+	@Test(description = "2.b. Create a Todo task - assign category and no due date")
+	public void setTodoDataAssignCatNoDue() {
+		String task = "Buy Chipotle";
+		String cat = "Play";
+		
+		webObjects.setTodoData(driver).sendKeys(task);
+		webObjects.setNewTodoCategoryColor(driver, cat);
+		webObjects.todoSubmit(driver).click();
+		String formFetch = webObjects.formFetch(driver,task).getText();
+		Assert.assertEquals(formFetch, task +" (None)", "Title assertion is failed!");
 	}
     
     //-----------------------------------Test TearDown-----------------------------------

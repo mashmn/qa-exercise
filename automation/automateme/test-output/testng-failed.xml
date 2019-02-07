@@ -5,8 +5,9 @@
     <classes>
       <class name="com.boot.automateme.AppTest">
         <methods>
-          <include name="createTodo"/>
           <include name="setupClass"/>
+          <include name="setTodoDataAssignCatNoDue"/>
+          <include name="setTodoDataNoCatNoDue"/>
           <include name="setupTest"/>
           <include name="teardownTest"/>
         </methods>

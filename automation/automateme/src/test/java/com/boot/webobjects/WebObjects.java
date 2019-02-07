@@ -15,8 +15,8 @@ public class WebObjects {
 	/**
 	 * List of todo
 	 */
-	public WebElement formFetch(WebDriver driver) {
-		return driver.findElement(By.xpath("//div[@id=\"todos-content\"]/form/ul//input"));
+	public WebElement formFetch(WebDriver driver, String task) {
+		return driver.findElement(By.xpath("//*[@id=\"todos-content\"]/form/ul/li[last()]/input/following-sibling::text()"));
 	}
 	
 	/**
@@ -35,7 +35,7 @@ public class WebObjects {
 	}
 	
 	/**
-	 * Advanced Controls - Data [Add TODO]
+	 * Advanced Controls - Data [Add To Do task]
 	 */
 	public WebElement setTodoData(WebDriver driver) {
 		return driver.findElement(By.xpath("//div[@class=\"advance-controls\"]/input[@name=\"data\"]"));
@@ -45,10 +45,10 @@ public class WebObjects {
 		return driver.findElement(By.xpath("//div[@class=\"advance-controls\"]/input[@value=\"Add\"]"));
 	}
 	
-	public void setNewTodoCategoryColor(WebDriver driver, String color) {
+	public void setNewTodoCategoryColor(WebDriver driver, String category) {
 		dropSelector = new Select(
 				driver.findElement(By.xpath("//div[@class=\"advance-controls\"]//select[@name=\"category\"]")));
-		dropSelector.selectByVisibleText(color);
+		dropSelector.selectByVisibleText(category);
 	}
 	
 	public void setNewTodoDueDay(WebDriver driver) {
@@ -95,13 +95,13 @@ public class WebObjects {
 	}
 	
 	/**
-	 * Advanced Controls - Category [Add Category]
+	 * Advanced Controls - Category [Add New Category]
 	 */
-	public Object todoNewCategoryData(WebDriver driver) {
+	public WebElement todoNewCategoryData(WebDriver driver) {
 		return driver.findElement(By.xpath("//div[@class=\"advance-controls\"]/input[@name=\"categorydata\"]"));
 	}
 	
-	public Object todoNewCategorySubmit(WebDriver driver) {
+	public WebElement todoNewCategorySubmit(WebDriver driver) {
 		return driver.findElement(By.xpath("//div[@class=\"advance-controls\"]//input[@value=\"Add category\"]"));
 	}
 	
@@ -109,5 +109,17 @@ public class WebObjects {
 		dropSelector = new Select(
 				driver.findElement(By.xpath("//div[@class=\"advance-controls\"]//select[@name=\"colour\"]")));
 		dropSelector.selectByVisibleText(color);
+	}
+	
+	/**
+	 * To Do already exists
+	 */
+	public boolean todoAlreadyExists(WebDriver driver) {
+		// return driver.findElement(By.xpath("/html/body/"));
+		return (driver.findElements(By.xpath("//body[contains(text(), 'Sorry that TODO item already exists. ')]")).size() > 0) ? true : false;	
+	}
+	
+	public void todoAlreadyExistsGoBack(WebDriver driver) {
+		driver.findElement(By.xpath("//body/a[.='Back']")).click();;
 	}
 }
