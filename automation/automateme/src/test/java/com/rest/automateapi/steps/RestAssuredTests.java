@@ -24,7 +24,7 @@ public class RestAssuredTests extends ServerDetails {
 	 * "application/json\r\n" 	
 	 */
 	@Test
-	public void givenFakeApi_one_getStatusCode_ServiceStatusTest() {
+	public void givenFakeApi_a_getStatusCode_ServiceStatusTest() {
 //		Assert.assertThat(
 //				given().log().all().contentType("text/html; charset=UTF-8")
 //				.get("/fake-api-call.php").getStatusCode(), Matchers.equalTo(200)
@@ -39,9 +39,9 @@ public class RestAssuredTests extends ServerDetails {
 	 * tasks without category. This test checks if this count matches with the fake api.
 	 */
 	@Test
-	public void givenFakeApi_two_getTasks_NoCategoryTest() {
+	public void givenFakeApi_b_getTasks_NoCategoryTest() {
 		Response response = given().log().all().
-				when().get(uri).
+				when().get("/fake-api-call.php").
 				then().contentType("text/html; charset=UTF-8").extract().response();
 		// GSON
 		List<Task> taskResponses = response.jsonPath().getList("$", Task.class);
@@ -61,15 +61,15 @@ public class RestAssuredTests extends ServerDetails {
 	 * tasks without category. This test checks if this count matches with the fake api.
 	 */
 	@Test
-	public void givenFakeApi_three_getTasks_aggregateTaskNamesTest() {
+	public void givenFakeApi_c_getTasks_aggregateTaskNamesTest() {
 		Response response = given().log().all().
-				when().get(uri).
+				when().get("/fake-api-call.php").
 				then().contentType("text/html; charset=UTF-8").extract().response();
 		// GSON
 		List<Task> taskResponses = response.jsonPath().getList("$", Task.class);
 
 		for (Task task: taskResponses) {
-			System.out.println(task.taskName.toString());
+			System.out.println(task.taskName);
 		}
 		
 	}	
