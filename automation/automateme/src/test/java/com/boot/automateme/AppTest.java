@@ -14,7 +14,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 /*****************************************************************************
  * Author:      Mahesh Nair
- * Description: This is the first Selenium TestNG test.
+ * Description: This is the  Selenium TestNG test for QA Exercise.
  *              
 *******************************************************************************/
 

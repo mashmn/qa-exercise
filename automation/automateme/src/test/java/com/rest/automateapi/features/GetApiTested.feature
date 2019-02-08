@@ -1,4 +1,4 @@
 Feature: Verify various GET operations using rest-assured
-  Scenario: Verify Status code of GET operation
-	Given a task exists with an isbn of 1 
-	When a user retrieves the task by 1
+  Scenario: Request the task resource
+	When I make "GET" request to "/fake-api-call/php"
+	Then I get a "200" response
