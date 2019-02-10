@@ -2,10 +2,12 @@ package com.rest.automateapi.steps;
 
 import static io.restassured.RestAssured.given;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
-//import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -14,11 +16,14 @@ import org.slf4j.LoggerFactory;
 import io.restassured.response.Response;
 
 import com.rest.automateapi.steps.Task;
+import com.rest.automateapi.steps.ApiIteratorClass;
 
 public class RestAssuredTests extends ServerDetails {
 	
-	private static final Logger logger = LoggerFactory.getLogger(RestAssuredTests.class);
+	public static final Logger logger = LoggerFactory.getLogger(RestAssuredTests.class);
 	
+	ApiIteratorClass apiIteratorClass = new ApiIteratorClass();
+	String fakeApiUrl = "/fake-api-call.php";
 
 	// final String uri = "http://localhost:89/qa-exercise/fake-api-call.php";	
 
@@ -29,18 +34,36 @@ public class RestAssuredTests extends ServerDetails {
 	 */
 	@Test
 	public void givenFakeApi_a_getStatusCode_ServiceStatusTest() {
-		logger.info("TEST CASE: Test service status of the API endpoint (only one in this case)");
-		logger.info("---TEST STARTS---");
+		logger.info("[TEST CASE]: Test service status of the API endpoint (only one in this case)---");
+		logger.info("[TEST STARTS]");
 		
-//		Assert.assertThat(
-//				given().log().all().contentType("text/html; charset=UTF-8")
-//				.get("/fake-api-call.php").getStatusCode(), Matchers.equalTo(200)
-//				);
-		given().log().all().
-			when().get("/fake-api-call.php").
-			then().contentType("text/html; charset=UTF-8").statusCode(200);
+		given().
+			when().log().all().
+				get(fakeApiUrl).
+			then().log().all().
+				contentType("text/html; charset=UTF-8");
 		
-		logger.info("---TEST ENDS---");
+		int responseStatusCode = given().
+				log().all().
+				get(fakeApiUrl).getStatusCode();
+		
+		try{
+			Assert.assertEquals(responseStatusCode, 200);
+			logger.info("[TEST PASSED] YAY! ... Status Code: " + responseStatusCode);
+		}catch(AssertionError e){
+			logger.info("[TEST FAILED] :( ... Status Code: " + responseStatusCode);
+			throw e;
+		}
+		
+	    /*
+		given().
+			when().log().all()
+				.get("/fake-api-call.php").
+			then().log().all()
+				.contentType("text/html; charset=UTF-8").
+					log().ifStatusCodeMatches(Matchers.not(200)).statusCode(200);
+		*/
+	     
 	}
 	
 	/**
@@ -49,11 +72,11 @@ public class RestAssuredTests extends ServerDetails {
 	 */
 	@Test
 	public void givenFakeApi_b_getTasks_NoCategoryTest() {
-		logger.info("TEST CASE: Find how many tasks do not have \"category\" assigned");
-		logger.info("---TEST STARTS---");
+		logger.info("[TEST CASE]: Find how many tasks do not have \"category\" assigned---");
+		logger.info("[TEST STARTS]");
 		
 		Response response = given().
-				when().get("/fake-api-call.php").
+				when().get(fakeApiUrl).
 				then().contentType("text/html; charset=UTF-8").extract().response();
 		// GSON
 		List<Task> taskResponses = response.jsonPath().getList("$", Task.class);
@@ -64,10 +87,14 @@ public class RestAssuredTests extends ServerDetails {
 				count++;
 			}
 		}
-		Assert.assertEquals(count, 5);
 		
-		logger.info("Tasks without category assigned: {}",count);
-		logger.info("---TEST ENDS---");
+		try{
+			Assert.assertEquals(count, 5);
+			logger.info("[TEST PASSED] YAY! ... Tasks without category assigned: {}: " + count);
+		}catch(AssertionError e){
+			logger.info("[TEST FAILED] :( ... Tasks without category assigned: {}: " + count);
+			throw e;
+		}
 	}	
 	
 	/**
@@ -76,49 +103,72 @@ public class RestAssuredTests extends ServerDetails {
 	 */
 	@Test
 	public void givenFakeApi_c_getTasks_aggregateTaskNamesTest() {
-		logger.info("TEST CASE: Aggregate and print only \"task names\"");
-		logger.info("---TEST STARTS---");
+		logger.info("[TEST CASE]: Aggregate and print only \"task names\"---");
+		logger.info("[TEST STARTS]");
 		
 		Response response = given().
-				when().get("/fake-api-call.php").
+				when().get(fakeApiUrl).
 				then().contentType("text/html; charset=UTF-8").extract().response();
 		// GSON
 		List<Task> taskResponses = response.jsonPath().getList("$", Task.class);
 
 		for (Task task: taskResponses) {
-			System.out.println("Task :"+task.taskName);
 			logger.info("Tasks : {}", task.taskName);
 		}
-		
-		logger.info("---TEST ENDS---");
-		
+
 	}
 	
 	/**
 	 * The original fake data (also found in backup_todo.list) has 5
 	 * tasks without category. This test checks if this count matches with the fake api.
 	 */
-//	@Test
-//	public void givenFakeApi_getTasks_descDueDatesTest() {
-//		logger.info("TEST CASE: Read API response and print tasks in descending \"due date\" order");
-//		logger.info("---TEST STARTS---");
-//		
-//		Response response = given().
-//				when().get("/fake-api-call.php").
-//				then().contentType("text/html; charset=UTF-8").extract().response();
-//		// GSON
-//		List<Task> taskResponses = response.jsonPath().getList("$", Task.class);
-//		
-//
-//		for (Task task: taskResponses) {
-//			String date =task.dueDate;
-//			System.out.println(date);
-//			logger.info("Tasks without category assigned: {}", task.dueDate);
-//		}
-//		
-//		logger.info("---TEST ENDS---");
-//		
-//	}	
+	@Test
+	public void givenFakeApi_getTasks_descDueDatesTest() {
+		logger.info("[TEST CASE]: Read API response and print tasks in descending \"due date\" order");
+		logger.info("[TEST STARTS]");
+		
+		Response response = given().
+				when().get(fakeApiUrl).
+				then().contentType("text/html; charset=UTF-8").extract().response();
+		
+		// GSON
+		List<Task> taskResponses = response.jsonPath().getList("$", Task.class);
+		Map<Date, String> descDueDateTasks = new TreeMap<Date, String>(Collections.reverseOrder());
+		
+		for (Task task: taskResponses) {
+			if (!task.dueDate.trim().equals("")) {
+//				logger.info("Tasks without category assigned: {}", apiIteratorClass.unixEpochToStandardTime(task.dueDate));
+				descDueDateTasks.put(apiIteratorClass.unixEpochToStandardTime(task.dueDate), task.taskName);
+			}			
+		}
+		for (Map.Entry<Date, String> m:descDueDateTasks.entrySet()) {
+			logger.info("Task date: " + m.getKey() + "Task name: " + m.getValue());
+//			System.out.println( m.getKey() +  " is " + m.getValue());
+		}
+	}
+	
+	/**
+	 * The original fake data (also found in backup_todo.list) has 5
+	 * tasks without category. This test checks if this count matches with the fake api.
+	 */
+	@Test
+	public void givenFakeApi_getTasks_validateTasksTest() {
+		logger.info("[TEST CASE]: Aggregate and print only \"task names\"---");
+		logger.info("[TEST STARTS]");
+		
+		Response response = given().
+				when().get(fakeApiUrl).
+				then().contentType("text/html; charset=UTF-8").extract().response();
+		// GSON
+		List<Task> taskResponses = response.jsonPath().getList("$", Task.class);
+		int taskCount = 0;
+		for (@SuppressWarnings("unused") Task task: taskResponses) {			
+			taskCount++;			
+		}
+		logger.info("No. of tasks: " + taskCount);
+		System.out.println("No. of tasks: " + taskCount);
+
+	}
 	
 	
 }

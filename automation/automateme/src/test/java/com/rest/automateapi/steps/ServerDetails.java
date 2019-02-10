@@ -1,19 +1,23 @@
 package com.rest.automateapi.steps;
 
 import org.junit.BeforeClass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.restassured.RestAssured;
 
+/**
+ * For testing this project, XAMPP Apache was set to listen to port 89.
+ * 
+ * API automated testing
+ * 
+ * Port can be changed via terminal run: 
+ * mvn test -Dserver.port=8080 -Dserver.host=http://localhost
+ */
 public class ServerDetails {
-
-	/**
-	 * For testing this project, XAMPP Apache was set to listen to port 89.
-	 * 
-	 * API automated testing
-	 * 
-	 * Port can be changed via terminal run: 
-	 * mvn test -Dserver.port=8080 -Dserver.host=http://localhost
-	 */
+	
+	public static final Logger logger = LoggerFactory.getLogger(ServerDetails.class);
+	
     @BeforeClass
     public static void setup() {
         String port = System.getProperty("server.port");
@@ -36,6 +40,8 @@ public class ServerDetails {
             baseHost = "http://localhost";
         }
         RestAssured.baseURI = baseHost;
-
+        
+        logger.info("[WEB API TEST]");
     }
+    
 }
