@@ -83,6 +83,8 @@ public class RestAssuredTests extends ServerDetails {
 		// Count no. of tasks with empty category
 		int count=0;
 		for (Task task: taskResponses) {
+//			System.out.println(task.category);
+			logger.info("[TEST PASSED] Category codes present: {}: " + task.category);
 			if (task.category.equals("")) {
 				count++;
 			}

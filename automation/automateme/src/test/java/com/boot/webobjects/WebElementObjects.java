@@ -5,11 +5,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
-public class WebObjects {
+public class WebElementObjects {
 	Select dropSelector;
 	
-	public String getHeader(WebDriver driver) {
-		return driver.findElement(By.xpath("//*[@id=\"label-first\"]/b")).getText();
+	public WebElement getHeader(WebDriver driver) {
+		return driver.findElement(By.xpath("//*[@id=\"label-first\"]/b"));
 	}
 	
 	/**
@@ -98,9 +98,10 @@ public class WebObjects {
 	 * Advanced Controls - Category [Add New Category]
 	 */
 	public WebElement todoNewCategoryData(WebDriver driver) {
-		return driver.findElement(By.xpath("//div[@class=\"advance-controls\"]/input[@name=\"categorydata\"]"));
+		return driver.findElement(By.xpath("//div[@class=\"advance-controls\"]/span[@id=\"extra\"]/input[@name=\"categorydata\"]"));
 	}
 	
+	// Change input value tag from Add category to add-category
 	public WebElement todoNewCategorySubmit(WebDriver driver) {
 		return driver.findElement(By.xpath("//div[@class=\"advance-controls\"]//input[@value=\"Add category\"]"));
 	}
@@ -116,7 +117,7 @@ public class WebObjects {
 	 */
 	public boolean todoAlreadyExists(WebDriver driver) {
 		// return driver.findElement(By.xpath("/html/body/"));
-		return (driver.findElements(By.xpath("//body[contains(text(), 'Sorry that TODO item already exists. ')]")).size() > 0) ? true : false;	
+		return (driver.findElements(By.xpath("/html/body/a/preceding-sibling::text()[0]")).size() > 0) ? true : false;
 	}
 	
 	public void todoAlreadyExistsGoBack(WebDriver driver) {

@@ -6,9 +6,7 @@
       <class name="com.boot.automateme.AppTest">
         <methods>
           <include name="setupClass"/>
-          <include name="setTodoDataAssignCatNoDue"/>
           <include name="setTodoDataNoCatNoDue"/>
-          <include name="setupTest"/>
           <include name="teardownTest"/>
         </methods>
       </class> <!-- com.boot.automateme.AppTest -->

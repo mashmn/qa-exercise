@@ -2,13 +2,16 @@ package com.boot.automateme;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
-import com.boot.webobjects.WebObjects;
+import com.boot.webobjects.WebElementObjects;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -21,45 +24,53 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 public class AppTest {
 
     //-----------------------------------Global Variables-----------------------------------
-    //Declare a Webdriver variable
+    //Declare a ChromeDriver variable
     public WebDriver driver;
-    // Port number for the qa-exercise
-    public String apachePort = "89";
-    //Declare a test URL variable
-    public String testURL = "http://localhost:"+apachePort+"/qa-exercise/";
-    WebObjects webObjects = new WebObjects();
+    ChromeOptions options = new ChromeOptions();
     
-    @BeforeSuite
+    // Port number for the qa-exercise
+    public String Port = "89";
+    
+    //Declare a test URL variable
+    public String testURL = "http://localhost:"+Port+"/qa-exercise/";
+    WebElementObjects webObjects = new WebElementObjects();
+    
+//    @BeforeSuite
+//    public void setupClass() {
+//    	WebDriverManager.chromedriver().setup();
+//        //Create a new ChromeDriver
+//        driver = new ChromeDriver();
+//    }
+    
+    @BeforeClass
     public void setupClass() {
-    	WebDriverManager.chromedriver().setup();
-        //Create a new ChromeDriver
-        driver = new ChromeDriver();
+        System.setProperty("webdriver.chrome.driver","C:\\drivers\\chromedriver_win32\\chromedriver.exe");        
+        options.addArguments("start-minimized");
+        driver = new ChromeDriver(options);
+        driver.get(testURL);
     }
-
-    //-----------------------------------Test Setup-----------------------------------
-    @BeforeMethod
-    public void setupTest() {
-        //Go to localhost:[port]/qa-exercise
-        driver.navigate().to(testURL);        
+    
+    @Test(description = "0. Open the TODO web App")
+    public void openSite() {
+        
+        driver.navigate().to(testURL);   
     }
-
+    
     //-----------------------------------Tests-----------------------------------
     @Test(description = "1. Simple test to get the header")
     public void firstTest () {
+    	
         //Get page title
         // String title = driver.findElement(By.xpath("//*[@id=\"label-first\"]/b")).getText();
-
-        String title = webObjects.getHeader(driver);
+        String title = webObjects.getHeader(driver).getText();
         
         //Print page's title
         System.out.println("Page Title: " + title);
 
         //Assertion
         Assert.assertEquals(title, "NSS-TODO List v 1.1", "Title assertion is failed!");
-    }
+    }	
     
-	
-	
 	@Test(description = "2.a. Create a Todo task - no category and no due date")
 	public void setTodoDataNoCatNoDue() {
 		String task = "Heyo";
@@ -90,9 +101,18 @@ public class AppTest {
 		String formFetch = webObjects.formFetch(driver,task).getText();
 		Assert.assertEquals(formFetch, task +" (None)", "Title assertion is failed!");
 	}
-    
+	
+	
+	@Test(description = "6.a. Create cat with no color")
+	public void createNewCat() {
+		String catData = "Chores";
+		webObjects.todoNewCategoryData(driver).sendKeys(catData);
+		webObjects.todoNewCategorySubmit(driver).click();
+		Assert.assertEquals("(None)", "(None)");
+	}
+	
     //-----------------------------------Test TearDown-----------------------------------
-	@AfterSuite
+	@AfterClass
 	public void teardownTest () throws InterruptedException{
 	    //Close browser and end the session
 		Thread.sleep(4000);

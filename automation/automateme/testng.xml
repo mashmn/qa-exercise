@@ -7,9 +7,4 @@
 	        <class name="AppTest"/>
 	    </classes>
 	</test>
-	<test name="Create a Todo task - no category and no due date">
-	    <classes>
-	        <class name="CreateTodo"/>
-	    </classes>
-	</test>
 </suite>
