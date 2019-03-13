@@ -48,5 +48,5 @@ Follow the Github standard collaboration procedure.
 <li>Selenium documentation: http://docs.seleniumhq.org/projects/webdriver/ </li>
 </ul>
 
-
+<i>Thank you!</i>
 
